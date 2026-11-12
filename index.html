@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#2F5D50" />
+<title>시니어 도우미</title>
+<style>
+  :root{
+    --primary:#2F5D50;
+    --primary-light:#E7F0ED;
+    --accent:#D96C2B;
+    --text:#1F2937;
+    --sub:#6B7280;
+    --bg:#FAFAF8;
+    --card:#FFFFFF;
+    --danger:#C0392B;
+    --radius:18px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    -webkit-font-smoothing:antialiased;
+  }
+  #app{
+    max-width:480px;
+    margin:0 auto;
+    min-height:100vh;
+    background:var(--card);
+    box-shadow:0 0 40px rgba(0,0,0,0.06);
+    display:flex;
+    flex-direction:column;
+  }
+  header.topbar{
+    background:var(--primary);
+    color:#fff;
+    padding:18px 20px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    position:sticky;
+    top:0;
+    z-index:10;
+  }
+  header.topbar .back{
+    font-size:26px;
+    cursor:pointer;
+    width:34px;
+    visibility:hidden;
+  }
+  header.topbar .back.show{visibility:visible;}
+  header.topbar h1{
+    font-size:22px;
+    margin:0;
+    font-weight:700;
+  }
+  main{
+    flex:1;
+    padding:24px 20px 100px;
+  }
+  .lead{
+    font-size:18px;
+    color:var(--sub);
+    line-height:1.6;
+    margin-bottom:28px;
+  }
+  .big-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    width:100%;
+    padding:22px;
+    font-size:22px;
+    font-weight:700;
+    border:none;
+    border-radius:var(--radius);
+    background:var(--primary);
+    color:#fff;
+    cursor:pointer;
+    margin-bottom:16px;
+  }
+  .big-btn.outline{
+    background:#fff;
+    color:var(--primary);
+    border:2px solid var(--primary);
+  }
+  .big-btn:active{opacity:0.85;}
+  .hero-icon{
+    font-size:64px;
+    text-align:center;
+    margin:10px 0 20px;
+  }
+  .card{
+    background:var(--primary-light);
+    border-radius:var(--radius);
+    padding:20px;
+    margin-bottom:16px;
+  }
+  .card h3{
+    margin:0 0 8px;
+    font-size:18px;
+    color:var(--primary);
+  }
+  .card p{
+    margin:0;
+    font-size:17px;
+    line-height:1.6;
+    color:var(--text);
+  }
+  .upload-box{
+    border:3px dashed #C8D6D1;
+    border-radius:var(--radius);
+    padding:40px 20px;
+    text-align:center;
+    color:var(--sub);
+    font-size:18px;
+    margin-bottom:20px;
+    cursor:pointer;
+  }
+  .upload-box.has-img{
+    border-style:solid;
+    padding:12px;
+  }
+  .upload-box img{
+    max-width:100%;
+    border-radius:12px;
+    display:block;
+    margin:0 auto;
+  }
+  input[type=file]{display:none;}
+  .quick-q{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin:16px 0 24px;
+  }
+  .chip{
+    background:var(--primary-light);
+    color:var(--primary);
+    padding:12px 18px;
+    border-radius:999px;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    border:none;
+  }
+  .ask-row{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    margin-bottom:10px;
+  }
+  .ask-input{
+    flex:1;
+    padding:18px;
+    font-size:18px;
+    border-radius:var(--radius);
+    border:2px solid #E5E7EB;
+  }
+  .mic-btn{
+    width:60px;
+    height:60px;
+    min-width:60px;
+    border-radius:50%;
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    font-size:24px;
+    cursor:pointer;
+  }
+  .mic-btn.listening{
+    animation:pulse 1s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(217,108,43,0.5);}
+    70%{box-shadow:0 0 0 16px rgba(217,108,43,0);}
+    100%{box-shadow:0 0 0 0 rgba(217,108,43,0);}
+  }
+  .loading{
+    text-align:center;
+    padding:60px 20px;
+    font-size:19px;
+    color:var(--sub);
+  }
+  .spinner{
+    width:48px;height:48px;
+    border:5px solid var(--primary-light);
+    border-top-color:var(--primary);
+    border-radius:50%;
+    margin:0 auto 20px;
+    animation:spin 0.9s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .answer-card{
+    background:var(--card);
+    border:2px solid var(--primary-light);
+    border-radius:var(--radius);
+    padding:22px;
+    margin-bottom:16px;
+  }
+  .answer-card .row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    padding:12px 0;
+    border-bottom:1px solid #F0F0EE;
+    gap:12px;
+  }
+  .answer-card .row:last-child{border-bottom:none;}
+  .answer-card .label{
+    font-size:16px;
+    color:var(--sub);
+    min-width:110px;
+  }
+  .answer-card .value{
+    font-size:17px;
+    font-weight:700;
+    text-align:right;
+    color:var(--text);
+  }
+  .answer-card .value.amount{
+    font-size:26px;
+    color:var(--primary);
+  }
+  .answer-card .value.note{
+    color:var(--accent);
+  }
+  .amount-banner{
+    text-align:center;
+    background:var(--primary);
+    color:#fff;
+    border-radius:var(--radius);
+    padding:26px 20px;
+    margin-bottom:18px;
+  }
+  .amount-banner .amt{
+    font-size:38px;
+    font-weight:800;
+    margin-top:4px;
+  }
+  .tts-row{
+    display:flex;
+    justify-content:center;
+    margin:18px 0 6px;
+  }
+  .tts-btn{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:var(--primary-light);
+    color:var(--primary);
+    border:none;
+    padding:14px 22px;
+    border-radius:999px;
+    font-size:17px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .compare-wrap{
+    display:flex;
+    gap:16px;
+  }
+  .compare-item{
+    flex:1;
+    text-align:center;
+  }
+  .compare-item .box{
+    background:var(--primary-light);
+    border-radius:14px;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    margin:0 auto 10px;
+  }
+  .compare-item .box .bar{
+    width:60%;
+    background:var(--primary);
+    border-radius:8px 8px 0 0;
+  }
+  .compare-item .size{font-size:20px;font-weight:700;}
+  .compare-item .name{font-size:15px;color:var(--sub);margin-top:4px;}
+  .diff-note{
+    text-align:center;
+    margin-top:18px;
+    font-size:17px;
+    color:var(--accent);
+    font-weight:700;
+  }
+  footer.nav{
+    position:sticky;
+    bottom:0;
+    background:#fff;
+    border-top:1px solid #EEE;
+    display:flex;
+    max-width:480px;
+    margin:0 auto;
+  }
+  footer.nav a{
+    flex:1;
+    text-align:center;
+    padding:14px 0 10px;
+    text-decoration:none;
+    color:var(--sub);
+    font-size:13px;
+  }
+  footer.nav a .ic{display:block;font-size:22px;margin-bottom:2px;}
+  footer.nav a.active{color:var(--primary);font-weight:700;}
+  .screen{display:none;}
+  .screen.active{display:block;}
+  .disclaimer{
+    font-size:13px;
+    color:#9CA3AF;
+    text-align:center;
+    margin-top:24px;
+    line-height:1.6;
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <span class="back" id="backBtn" onclick="goBack()">‹</span>
+    <h1 id="pageTitle">시니어 도우미</h1>
+  </header>
+
+  <main>
+    <!-- 홈 -->
+    <section class="screen active" id="screen-home">
+      <div class="hero-icon">🛍️💬</div>
+      <p class="lead">쇼핑하다가 화면이 복잡해서 헷갈릴 때,<br>스크린샷 한 장이면 바로 쉽게 알려드려요.</p>
+      <button class="big-btn" onclick="nav('capture')">📷 화면 보여주고 물어보기</button>
+      <div class="card">
+        <h3>이렇게 써보세요</h3>
+        <p>① 궁금한 화면을 캡처해서 공유 버튼으로 "시니어 도우미" 선택<br>② "이거 왜 0원이야?"처럼 편하게 물어보세요<br>③ 쉬운 말로 바로 답해드려요</p>
+      </div>
+    </section>
+
+    <!-- 캡처 업로드 -->
+    <section class="screen" id="screen-capture">
+      <p class="lead">궁금한 화면 사진을 올려주세요.<br>(평소처럼 캡처 후 공유하기로 바로 보낼 수 있어요)</p>
+      <label class="upload-box" id="uploadBox">
+        <span id="uploadHint">여기를 눌러 화면 사진 선택</span>
+        <input type="file" accept="image/*" id="fileInput" onchange="handleUpload(event)" />
+      </label>
+      <button class="big-btn" id="goAskBtn" style="display:none" onclick="nav('ask')">다음 →</button>
+    </section>
+
+    <!-- 질문 -->
+    <section class="screen" id="screen-ask">
+      <p class="lead">무엇이 궁금하세요? 편하게 말씀하시듯 적어주세요.</p>
+      <div class="quick-q">
+        <button class="chip" onclick="fillQuestion('이거 왜 0원이야?')">이거 왜 0원이야?</button>
+        <button class="chip" onclick="fillQuestion('결국 얼마 내는 거야?')">결국 얼마 내는 거야?</button>
+        <button class="chip" onclick="fillQuestion('배송비도 있어?')">배송비도 있어?</button>
+      </div>
+      <div class="ask-row">
+        <input class="ask-input" id="questionInput" placeholder="예) 이거 왜 0원이야?" />
+        <button class="mic-btn" id="micBtn" onclick="toggleMic()">🎤</button>
+      </div>
+      <button class="big-btn" onclick="submitQuestion()">질문하기</button>
+    </section>
+
+    <!-- 로딩 -->
+    <section class="screen" id="screen-loading">
+      <div class="loading">
+        <div class="spinner"></div>
+        화면을 확인하고 있어요...
+      </div>
+    </section>
+
+    <!-- 답변 -->
+    <section class="screen" id="screen-answer">
+      <div class="amount-banner">
+        <div>지금 내실 결제 금액</div>
+        <div class="amt">0원</div>
+      </div>
+      <div class="answer-card">
+        <div class="row">
+          <div class="label">왜 0원인가요?</div>
+          <div class="value note">웰컴백 쿠폰 할인 적용</div>
+        </div>
+        <div class="row">
+          <div class="label">추가로 더 낼 돈</div>
+          <div class="value">없음</div>
+        </div>
+        <div class="row">
+          <div class="label">확인할 점</div>
+          <div class="value">쿠폰은 이번 1회만 사용 가능</div>
+        </div>
+      </div>
+      <div class="tts-row">
+        <button class="tts-btn" onclick="speakAnswer()">🔊 소리로 다시 듣기</button>
+      </div>
+      <button class="big-btn outline" onclick="nav('compare')">상품 비교도 해볼까요? →</button>
+      <button class="big-btn" onclick="resetToHome()">처음으로</button>
+    </section>
+
+    <!-- 비교 -->
+    <section class="screen" id="screen-compare">
+      <p class="lead">두 상품의 실제 크기 차이를 눈으로 보여드려요.</p>
+      <div class="compare-wrap">
+        <div class="compare-item">
+          <div class="box" style="height:140px;">
+            <div class="bar" style="height:78px;"></div>
+          </div>
+          <div class="size">30cm</div>
+          <div class="name">A 상품</div>
+        </div>
+        <div class="compare-item">
+          <div class="box" style="height:140px;">
+            <div class="bar" style="height:92px;"></div>
+          </div>
+          <div class="size">35cm</div>
+          <div class="name">B 상품</div>
+        </div>
+      </div>
+      <div class="diff-note">B 상품이 A보다 약 17% 더 커요 (5cm 차이)</div>
+      <button class="big-btn" style="margin-top:28px" onclick="resetToHome()">처음으로</button>
+    </section>
+  </main>
+
+  <footer class="nav">
+    <a href="#/" onclick="nav('home');return false;" id="navHome"><span class="ic">🏠</span>홈</a>
+    <a href="#/capture" onclick="nav('capture');return false;" id="navCapture"><span class="ic">📷</span>물어보기</a>
+    <a href="#/compare" onclick="nav('compare');return false;" id="navCompare"><span class="ic">⚖️</span>비교하기</a>
+  </footer>
+  <p class="disclaimer">프로토타입 목업입니다. 실제 AI 분석 대신 예시 답변을 보여줍니다.</p>
+</div>
+
+<script>
+  const titles = {
+    home: '시니어 도우미',
+    capture: '화면 보여주기',
+    ask: '무엇이 궁금하세요?',
+    loading: '확인 중...',
+    answer: '쉽게 알려드릴게요',
+    compare: '상품 비교'
+  };
+  const history = [];
+
+  function setActiveNav(name){
+    ['navHome','navCapture','navCompare'].forEach(id => document.getElementById(id).classList.remove('active'));
+    if(name==='home') document.getElementById('navHome').classList.add('active');
+    if(name==='capture'||name==='ask'||name==='loading'||name==='answer') document.getElementById('navCapture').classList.add('active');
+    if(name==='compare') document.getElementById('navCompare').classList.add('active');
+  }
+
+  function nav(name, push=true){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById('screen-'+name).classList.add('active');
+    document.getElementById('pageTitle').textContent = titles[name];
+    document.getElementById('backBtn').classList.toggle('show', name!=='home');
+    setActiveNav(name);
+    if(push) history.push(name);
+    location.hash = '#/' + (name==='home' ? '' : name);
+    window.scrollTo(0,0);
+  }
+
+  function goBack(){
+    history.pop();
+    const prev = history.pop() || 'home';
+    nav(prev);
+  }
+
+  function resetToHome(){
+    history.length = 0;
+    document.getElementById('uploadBox').classList.remove('has-img');
+    document.getElementById('uploadHint').style.display='block';
+    const preview = document.getElementById('previewImg');
+    if(preview) preview.remove();
+    document.getElementById('goAskBtn').style.display='none';
+    document.getElementById('questionInput').value='';
+    nav('home');
+  }
+
+  function handleUpload(e){
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev){
+      const box = document.getElementById('uploadBox');
+      box.classList.add('has-img');
+      document.getElementById('uploadHint').style.display='none';
+      let img = document.getElementById('previewImg');
+      if(!img){
+        img = document.createElement('img');
+        img.id = 'previewImg';
+        box.appendChild(img);
+      }
+      img.src = ev.target.result;
+      document.getElementById('goAskBtn').style.display='block';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function fillQuestion(q){
+    document.getElementById('questionInput').value = q;
+  }
+
+  function submitQuestion(){
+    nav('loading');
+    setTimeout(()=>{ nav('answer'); }, 1200);
+  }
+
+  let recognizing = false;
+  function toggleMic(){
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const btn = document.getElementById('micBtn');
+    if(!SpeechRecognition){
+      fillQuestion('이거 왜 0원이야?');
+      return;
+    }
+    if(recognizing) return;
+    const rec = new SpeechRecognition();
+    rec.lang = 'ko-KR';
+    rec.onstart = ()=>{ recognizing = true; btn.classList.add('listening'); };
+    rec.onresult = (e)=>{ document.getElementById('questionInput').value = e.results[0][0].transcript; };
+    rec.onend = ()=>{ recognizing = false; btn.classList.remove('listening'); };
+    rec.start();
+  }
+
+  function speakAnswer(){
+    const text = '지금 내실 결제 금액은 0원입니다. 웰컴백 쿠폰 할인이 적용되어서 그렇습니다. 추가로 더 내실 돈은 없습니다. 다만 이 쿠폰은 이번 한 번만 사용할 수 있습니다.';
+    if('speechSynthesis' in window){
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'ko-KR';
+      u.rate = 0.95;
+      speechSynthesis.speak(u);
+    }
+  }
+
+  // 초기 라우팅
+  function routeFromHash(){
+    const h = location.hash.replace('#/','');
+    nav(h || 'home', false);
+  }
+  window.addEventListener('hashchange', routeFromHash);
+  routeFromHash();
+</script>
+</body>
+</html>
