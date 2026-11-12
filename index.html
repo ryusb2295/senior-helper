@@ -3,543 +3,497 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#2F5D50" />
+<meta name="theme-color" content="#F6F3EC" />
 <title>시니어 도우미</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
 <style>
   :root{
-    --primary:#2F5D50;
-    --primary-light:#E7F0ED;
-    --accent:#D96C2B;
-    --text:#1F2937;
-    --sub:#6B7280;
-    --bg:#FAFAF8;
-    --card:#FFFFFF;
-    --danger:#C0392B;
-    --radius:18px;
+    --bg:#F6F3EC;
+    --surface:#FFFFFF;
+    --ink:#17201C;
+    --sub:#5B6660;
+    --line:#E6E1D6;
+    --primary:#1F5C4A;
+    --primary-ink:#FFFFFF;
+    --primary-soft:#E3EEE9;
+    --accent:#E0662A;
+    --accent-soft:#FCEBDF;
+    --good:#1F7A4D;
+    --radius:24px;
+    --shadow:0 1px 2px rgba(23,32,28,.06), 0 8px 24px rgba(23,32,28,.06);
   }
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
+  [hidden]{display:none !important;}
+  html,body{margin:0;}
   body{
-    font-family:"Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",sans-serif;
-    background:var(--bg);
-    color:var(--text);
+    font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    background:#E9E4D8;
+    color:var(--ink);
+    font-size:19px;
+    line-height:1.55;
+    letter-spacing:-0.01em;
     -webkit-font-smoothing:antialiased;
   }
+  button{font:inherit;color:inherit;cursor:pointer;}
+  button:focus-visible,label:focus-visible,input:focus-visible{outline:4px solid var(--accent);outline-offset:3px;}
+  svg{flex-shrink:0;}
+
   #app{
-    max-width:480px;
+    max-width:440px;
     margin:0 auto;
-    min-height:100vh;
-    background:var(--card);
-    box-shadow:0 0 40px rgba(0,0,0,0.06);
+    min-height:100dvh;
+    background:var(--bg);
     display:flex;
     flex-direction:column;
   }
-  header.topbar{
-    background:var(--primary);
-    color:#fff;
-    padding:18px 20px;
-    display:flex;
-    align-items:center;
-    gap:12px;
-    position:sticky;
-    top:0;
-    z-index:10;
+  @media (min-width:600px){
+    body{padding:32px 0;}
+    #app{min-height:860px;border-radius:40px;box-shadow:0 30px 80px rgba(0,0,0,.18);overflow:hidden;}
   }
-  header.topbar .back{
-    font-size:26px;
-    cursor:pointer;
-    width:34px;
-    visibility:hidden;
+
+  /* 상단바 */
+  .topbar{
+    display:flex;align-items:center;gap:8px;
+    padding:16px 16px 8px;
+    min-height:72px;
   }
-  header.topbar .back.show{visibility:visible;}
-  header.topbar h1{
-    font-size:22px;
-    margin:0;
-    font-weight:700;
+  .back{
+    width:56px;height:56px;border-radius:50%;
+    border:none;background:var(--surface);box-shadow:var(--shadow);
+    display:flex;align-items:center;justify-content:center;
   }
-  main{
-    flex:1;
-    padding:24px 20px 100px;
+  .back[hidden]{display:none;}
+  .topbar h1{font-size:22px;font-weight:700;margin:0 0 0 6px;}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;color:var(--primary);}
+  .brand .dot{width:36px;height:36px;border-radius:12px;background:var(--primary);display:flex;align-items:center;justify-content:center;}
+
+  main{flex:1;padding:8px 20px 32px;display:flex;flex-direction:column;}
+  .screen{display:none;flex:1;flex-direction:column;animation:in .25s ease;}
+  .screen.active{display:flex;}
+  @keyframes in{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+
+  h2.title{font-size:30px;line-height:1.3;font-weight:800;margin:12px 0 10px;letter-spacing:-0.03em;}
+  .lead{font-size:19px;color:var(--sub);margin:0 0 24px;}
+  .spacer{flex:1;}
+
+  /* 버튼 */
+  .btn{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    width:100%;min-height:68px;padding:0 24px;
+    font-size:21px;font-weight:700;
+    border:none;border-radius:20px;
+    background:var(--primary);color:var(--primary-ink);
+    margin-top:12px;
+    transition:transform .1s;
   }
-  .lead{
-    font-size:18px;
-    color:var(--sub);
-    line-height:1.6;
-    margin-bottom:28px;
+  .btn:active{transform:scale(.98);}
+  .btn.ghost{background:var(--surface);color:var(--primary);box-shadow:inset 0 0 0 2px var(--line);}
+  .btn[hidden]{display:none;}
+
+  /* 홈 큰 카드 버튼 */
+  .hero-btn{
+    width:100%;border:none;text-align:left;
+    background:var(--primary);color:#fff;
+    border-radius:28px;padding:28px 24px;
+    display:flex;flex-direction:column;gap:18px;
+    box-shadow:0 12px 30px rgba(31,92,74,.28);
   }
-  .big-btn{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-    width:100%;
-    padding:22px;
-    font-size:22px;
-    font-weight:700;
-    border:none;
-    border-radius:var(--radius);
-    background:var(--primary);
-    color:#fff;
-    cursor:pointer;
-    margin-bottom:16px;
+  .hero-btn .ic{width:64px;height:64px;border-radius:20px;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;}
+  .hero-btn strong{font-size:26px;line-height:1.3;display:block;}
+  .hero-btn span{font-size:18px;opacity:.85;}
+  .row-btn{
+    width:100%;border:none;text-align:left;margin-top:14px;
+    background:var(--surface);border-radius:24px;padding:20px;
+    display:flex;align-items:center;gap:16px;box-shadow:var(--shadow);
   }
-  .big-btn.outline{
-    background:#fff;
-    color:var(--primary);
-    border:2px solid var(--primary);
+  .row-btn .ic{width:52px;height:52px;border-radius:16px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;}
+  .row-btn b{font-size:21px;display:block;}
+  .row-btn small{font-size:17px;color:var(--sub);}
+  .row-btn .chev{margin-left:auto;color:var(--sub);}
+
+  .steps{margin-top:28px;background:var(--surface);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);}
+  .steps h3{margin:0 0 14px;font-size:19px;color:var(--sub);font-weight:600;}
+  .step{display:flex;gap:14px;align-items:flex-start;padding:8px 0;font-size:19px;}
+  .step .n{width:34px;height:34px;border-radius:50%;background:var(--primary-soft);color:var(--primary);font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:17px;}
+  .note{font-size:15px;color:var(--sub);text-align:center;margin-top:20px;}
+
+  /* 업로드 */
+  .upload{
+    flex:1;min-height:300px;
+    border:3px dashed #C9C2B2;border-radius:28px;background:var(--surface);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+    text-align:center;padding:24px;font-size:21px;font-weight:700;
   }
-  .big-btn:active{opacity:0.85;}
-  .hero-icon{
-    font-size:64px;
-    text-align:center;
-    margin:10px 0 20px;
+  .upload small{font-size:17px;font-weight:400;color:var(--sub);}
+  .upload.has-img{border-style:solid;border-color:var(--line);padding:12px;}
+  .upload img{max-width:100%;max-height:420px;border-radius:16px;display:block;}
+  input[type=file]{position:absolute;opacity:0;width:1px;height:1px;}
+  .link-btn{background:none;border:none;color:var(--primary);font-weight:700;font-size:19px;text-decoration:underline;text-underline-offset:4px;padding:14px;margin-top:4px;}
+
+  /* 질문 */
+  .thumb{display:flex;align-items:center;gap:14px;background:var(--surface);border-radius:20px;padding:12px;box-shadow:var(--shadow);margin-bottom:24px;}
+  .thumb img,.thumb .mini{width:56px;height:72px;object-fit:cover;border-radius:10px;background:var(--primary-soft);}
+  .thumb span{font-size:17px;color:var(--sub);}
+  .mic-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;margin:8px 0 28px;}
+  .mic{
+    width:132px;height:132px;border-radius:50%;border:none;
+    background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 14px 34px rgba(224,102,42,.35);
   }
-  .card{
-    background:var(--primary-light);
-    border-radius:var(--radius);
-    padding:20px;
-    margin-bottom:16px;
-  }
-  .card h3{
-    margin:0 0 8px;
-    font-size:18px;
-    color:var(--primary);
-  }
-  .card p{
-    margin:0;
-    font-size:17px;
-    line-height:1.6;
-    color:var(--text);
-  }
-  .upload-box{
-    border:3px dashed #C8D6D1;
-    border-radius:var(--radius);
-    padding:40px 20px;
-    text-align:center;
-    color:var(--sub);
-    font-size:18px;
-    margin-bottom:20px;
-    cursor:pointer;
-  }
-  .upload-box.has-img{
-    border-style:solid;
-    padding:12px;
-  }
-  .upload-box img{
-    max-width:100%;
-    border-radius:12px;
-    display:block;
-    margin:0 auto;
-  }
-  input[type=file]{display:none;}
-  .quick-q{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    margin:16px 0 24px;
-  }
+  .mic.listening{animation:pulse 1.2s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(224,102,42,.5);}70%{box-shadow:0 0 0 28px rgba(224,102,42,0);}100%{box-shadow:0 0 0 0 rgba(224,102,42,0);}}
+  .mic-wrap b{font-size:21px;}
+  .divider{display:flex;align-items:center;gap:12px;color:var(--sub);font-size:17px;margin:4px 0 14px;}
+  .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line);}
   .chip{
-    background:var(--primary-light);
-    color:var(--primary);
-    padding:12px 18px;
-    border-radius:999px;
-    font-size:16px;
-    font-weight:600;
-    cursor:pointer;
-    border:none;
+    width:100%;border:none;text-align:left;
+    background:var(--surface);border-radius:18px;
+    padding:18px 20px;margin-bottom:10px;
+    font-size:20px;font-weight:600;box-shadow:inset 0 0 0 2px var(--line);
+    display:flex;align-items:center;gap:12px;
   }
-  .ask-row{
-    display:flex;
-    gap:10px;
-    align-items:center;
-    margin-bottom:10px;
-  }
+  .chip.on{box-shadow:inset 0 0 0 3px var(--primary);background:var(--primary-soft);}
   .ask-input{
-    flex:1;
-    padding:18px;
-    font-size:18px;
-    border-radius:var(--radius);
-    border:2px solid #E5E7EB;
+    width:100%;min-height:64px;padding:0 20px;margin-top:4px;
+    font:inherit;font-size:20px;border-radius:18px;border:2px solid var(--line);background:var(--surface);
   }
-  .mic-btn{
-    width:60px;
-    height:60px;
-    min-width:60px;
-    border-radius:50%;
-    background:var(--accent);
-    color:#fff;
-    border:none;
-    font-size:24px;
-    cursor:pointer;
-  }
-  .mic-btn.listening{
-    animation:pulse 1s infinite;
-  }
-  @keyframes pulse{
-    0%{box-shadow:0 0 0 0 rgba(217,108,43,0.5);}
-    70%{box-shadow:0 0 0 16px rgba(217,108,43,0);}
-    100%{box-shadow:0 0 0 0 rgba(217,108,43,0);}
-  }
-  .loading{
-    text-align:center;
-    padding:60px 20px;
-    font-size:19px;
-    color:var(--sub);
-  }
-  .spinner{
-    width:48px;height:48px;
-    border:5px solid var(--primary-light);
-    border-top-color:var(--primary);
-    border-radius:50%;
-    margin:0 auto 20px;
-    animation:spin 0.9s linear infinite;
-  }
+
+  /* 로딩 */
+  .loading{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;}
+  .spinner{width:72px;height:72px;border:7px solid var(--primary-soft);border-top-color:var(--primary);border-radius:50%;animation:spin .9s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
-  .answer-card{
-    background:var(--card);
-    border:2px solid var(--primary-light);
-    border-radius:var(--radius);
-    padding:22px;
-    margin-bottom:16px;
+  .load-steps{list-style:none;padding:0;margin:0;width:100%;max-width:300px;}
+  .load-steps li{display:flex;align-items:center;gap:12px;padding:10px 0;font-size:20px;color:#A8A294;transition:color .3s;}
+  .load-steps li::before{content:"";width:14px;height:14px;border-radius:50%;background:currentColor;}
+  .load-steps li.on{color:var(--ink);font-weight:700;}
+  .load-steps li.on::before{background:var(--primary);}
+
+  /* 답변 */
+  .bubble{align-self:flex-end;background:var(--primary);color:#fff;padding:14px 20px;border-radius:22px 22px 6px 22px;font-size:19px;font-weight:600;margin:4px 0 18px;max-width:85%;}
+  .amount{
+    background:var(--surface);border-radius:28px;padding:26px 24px;box-shadow:var(--shadow);text-align:center;
   }
-  .answer-card .row{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    padding:12px 0;
-    border-bottom:1px solid #F0F0EE;
-    gap:12px;
+  .amount .lbl{font-size:19px;color:var(--sub);}
+  .amount .big{font-size:60px;font-weight:800;letter-spacing:-0.04em;line-height:1.15;margin:4px 0 10px;color:var(--primary);}
+  .badge{display:inline-flex;align-items:center;gap:6px;background:var(--primary-soft);color:var(--good);font-weight:700;padding:8px 16px;border-radius:999px;font-size:18px;}
+  .sec{margin-top:22px;}
+  .sec h3{font-size:21px;margin:0 0 12px;display:flex;align-items:center;gap:8px;}
+  .receipt{background:var(--surface);border-radius:var(--radius);padding:8px 22px;box-shadow:var(--shadow);}
+  .receipt .r{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px dashed var(--line);font-size:19px;}
+  .receipt .r:last-child{border-bottom:none;}
+  .receipt .r b{font-weight:700;font-variant-numeric:tabular-nums;}
+  .receipt .r.minus b{color:var(--accent);}
+  .receipt .r.minus span{display:flex;align-items:center;gap:8px;}
+  .tag{background:var(--accent);color:#fff;font-size:14px;font-weight:700;padding:3px 8px;border-radius:8px;}
+  .receipt .r.total{border-top:2px solid var(--ink);border-bottom:none;font-size:21px;font-weight:800;}
+  .receipt .r.total b{color:var(--primary);font-size:24px;}
+  .warn{background:var(--accent-soft);border-radius:var(--radius);padding:18px 20px;}
+  .warn li{margin:4px 0 4px 2px;font-size:19px;}
+  .warn ul{margin:0;padding-left:22px;}
+  .tts{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    width:100%;min-height:64px;margin-top:22px;border:none;border-radius:20px;
+    background:var(--primary-soft);color:var(--primary);font-size:20px;font-weight:700;
   }
-  .answer-card .row:last-child{border-bottom:none;}
-  .answer-card .label{
-    font-size:16px;
-    color:var(--sub);
-    min-width:110px;
-  }
-  .answer-card .value{
-    font-size:17px;
-    font-weight:700;
-    text-align:right;
-    color:var(--text);
-  }
-  .answer-card .value.amount{
-    font-size:26px;
-    color:var(--primary);
-  }
-  .answer-card .value.note{
-    color:var(--accent);
-  }
-  .amount-banner{
-    text-align:center;
-    background:var(--primary);
-    color:#fff;
-    border-radius:var(--radius);
-    padding:26px 20px;
-    margin-bottom:18px;
-  }
-  .amount-banner .amt{
-    font-size:38px;
-    font-weight:800;
-    margin-top:4px;
-  }
-  .tts-row{
-    display:flex;
-    justify-content:center;
-    margin:18px 0 6px;
-  }
-  .tts-btn{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    background:var(--primary-light);
-    color:var(--primary);
-    border:none;
-    padding:14px 22px;
-    border-radius:999px;
-    font-size:17px;
-    font-weight:700;
-    cursor:pointer;
-  }
-  .compare-wrap{
-    display:flex;
-    gap:16px;
-  }
-  .compare-item{
-    flex:1;
-    text-align:center;
-  }
-  .compare-item .box{
-    background:var(--primary-light);
-    border-radius:14px;
-    display:flex;
-    align-items:flex-end;
-    justify-content:center;
-    margin:0 auto 10px;
-  }
-  .compare-item .box .bar{
-    width:60%;
-    background:var(--primary);
-    border-radius:8px 8px 0 0;
-  }
-  .compare-item .size{font-size:20px;font-weight:700;}
-  .compare-item .name{font-size:15px;color:var(--sub);margin-top:4px;}
-  .diff-note{
-    text-align:center;
-    margin-top:18px;
-    font-size:17px;
-    color:var(--accent);
-    font-weight:700;
-  }
-  footer.nav{
-    position:sticky;
-    bottom:0;
-    background:#fff;
-    border-top:1px solid #EEE;
-    display:flex;
-    max-width:480px;
-    margin:0 auto;
-  }
-  footer.nav a{
-    flex:1;
-    text-align:center;
-    padding:14px 0 10px;
-    text-decoration:none;
-    color:var(--sub);
-    font-size:13px;
-  }
-  footer.nav a .ic{display:block;font-size:22px;margin-bottom:2px;}
-  footer.nav a.active{color:var(--primary);font-weight:700;}
-  .screen{display:none;}
-  .screen.active{display:block;}
-  .disclaimer{
-    font-size:13px;
-    color:#9CA3AF;
-    text-align:center;
-    margin-top:24px;
-    line-height:1.6;
-  }
+  .tts.playing{background:var(--primary);color:#fff;}
+  .two{display:flex;gap:10px;}
+  .two .btn{flex:1;padding:0 12px;font-size:19px;}
+
+  /* 비교 */
+  .cmp{background:var(--surface);border-radius:28px;padding:24px 20px;box-shadow:var(--shadow);}
+  .stage{position:relative;height:250px;display:flex;align-items:flex-end;justify-content:center;}
+  .sq{position:absolute;bottom:0;border-radius:12px;display:flex;align-items:flex-start;justify-content:flex-start;padding:10px 12px;font-weight:800;font-size:18px;}
+  .sq.b{background:var(--accent-soft);border:3px solid var(--accent);color:var(--accent);}
+  .sq.a{background:rgba(31,92,74,.12);border:3px solid var(--primary);color:var(--primary);}
+  .legend{display:flex;gap:10px;margin-top:20px;}
+  .legend div{flex:1;border-radius:18px;padding:14px;text-align:center;}
+  .legend .la{background:var(--primary-soft);color:var(--primary);}
+  .legend .lb{background:var(--accent-soft);color:var(--accent);}
+  .legend b{display:block;font-size:28px;}
+  .legend span{font-size:16px;font-weight:600;}
+  .facts{margin-top:18px;background:var(--surface);border-radius:var(--radius);padding:6px 22px;box-shadow:var(--shadow);}
+  .facts .f{display:flex;gap:14px;align-items:flex-start;padding:16px 0;border-bottom:1px solid var(--line);font-size:19px;}
+  .facts .f:last-child{border-bottom:none;}
+  .facts .f .ic{width:40px;height:40px;border-radius:12px;background:var(--primary-soft);color:var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .facts b{color:var(--accent);}
+
+  /* 예시 결제 화면 (데모용 캡처 대신) */
+  .mock{width:100%;max-width:300px;background:#fff;border-radius:16px;border:1px solid #ddd;padding:14px;text-align:left;font-size:12px;line-height:1.5;color:#333;font-weight:400;}
+  .mock .h{font-weight:700;font-size:14px;margin-bottom:8px;}
+  .mock .l{display:flex;justify-content:space-between;color:#666;}
+  .mock .l.c{color:#e33;}
+  .mock .t{display:flex;justify-content:space-between;font-weight:800;font-size:16px;border-top:1px solid #eee;margin-top:6px;padding-top:6px;}
+  .mock .fine{color:#999;font-size:10px;margin-top:6px;}
+  .mock .pay{background:#e33;color:#fff;text-align:center;border-radius:8px;padding:8px;margin-top:10px;font-weight:700;}
 </style>
 </head>
 <body>
 <div id="app">
   <header class="topbar">
-    <span class="back" id="backBtn" onclick="goBack()">‹</span>
-    <h1 id="pageTitle">시니어 도우미</h1>
+    <button class="back" id="backBtn" onclick="history.back()" aria-label="뒤로 가기" hidden>
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="brand" id="brand">
+      <span class="dot"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg></span>
+      시니어 도우미
+    </div>
+    <h1 id="pageTitle" hidden></h1>
   </header>
 
   <main>
     <!-- 홈 -->
-    <section class="screen active" id="screen-home">
-      <div class="hero-icon">🛍️💬</div>
-      <p class="lead">쇼핑하다가 화면이 복잡해서 헷갈릴 때,<br>스크린샷 한 장이면 바로 쉽게 알려드려요.</p>
-      <button class="big-btn" onclick="nav('capture')">📷 화면 보여주고 물어보기</button>
-      <div class="card">
-        <h3>이렇게 써보세요</h3>
-        <p>① 궁금한 화면을 캡처해서 공유 버튼으로 "시니어 도우미" 선택<br>② "이거 왜 0원이야?"처럼 편하게 물어보세요<br>③ 쉬운 말로 바로 답해드려요</p>
+    <section class="screen" id="screen-home">
+      <h2 class="title">화면이 헷갈리시면<br>바로 물어보세요</h2>
+      <p class="lead">사진 한 장만 보여주시면<br>쉬운 말로 알려드려요.</p>
+
+      <button class="hero-btn" onclick="go('capture')">
+        <span class="ic"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
+        <div><strong>화면 보여주고 물어보기</strong><span>“이거 왜 0원이야?”</span></div>
+      </button>
+
+      <button class="row-btn" onclick="go('compare')">
+        <span class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E0662A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="8" height="13" rx="1.5"/><rect x="13" y="3" width="8" height="18" rx="1.5"/></svg></span>
+        <div><b>두 상품 비교하기</b><small>크기·가격 차이를 눈으로</small></div>
+        <svg class="chev" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+
+      <div class="steps">
+        <h3>이렇게 쓰시면 돼요</h3>
+        <div class="step"><span class="n">1</span><div>궁금한 화면을 <b>캡처</b>하세요</div></div>
+        <div class="step"><span class="n">2</span><div><b>공유</b> → “시니어 도우미”를 누르세요</div></div>
+        <div class="step"><span class="n">3</span><div>말로 <b>물어보시면</b> 끝이에요</div></div>
       </div>
+      <p class="note">프로토타입이에요. 예시 답변이 나와요.</p>
     </section>
 
     <!-- 캡처 업로드 -->
     <section class="screen" id="screen-capture">
-      <p class="lead">궁금한 화면 사진을 올려주세요.<br>(평소처럼 캡처 후 공유하기로 바로 보낼 수 있어요)</p>
-      <label class="upload-box" id="uploadBox">
-        <span id="uploadHint">여기를 눌러 화면 사진 선택</span>
+      <h2 class="title">어떤 화면이<br>궁금하세요?</h2>
+      <label class="upload" id="uploadBox" tabindex="0">
+        <span id="uploadHint">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#1F5C4A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><br>
+          여기를 눌러<br>사진을 골라주세요<br>
+          <small>캡처한 화면 사진이면 돼요</small>
+        </span>
         <input type="file" accept="image/*" id="fileInput" onchange="handleUpload(event)" />
       </label>
-      <button class="big-btn" id="goAskBtn" style="display:none" onclick="nav('ask')">다음 →</button>
+      <button class="link-btn" id="sampleBtn" onclick="useSample()">예시 결제 화면으로 해보기</button>
+      <button class="btn" id="goAskBtn" hidden onclick="go('ask')">이 화면으로 물어보기</button>
     </section>
 
     <!-- 질문 -->
     <section class="screen" id="screen-ask">
-      <p class="lead">무엇이 궁금하세요? 편하게 말씀하시듯 적어주세요.</p>
-      <div class="quick-q">
-        <button class="chip" onclick="fillQuestion('이거 왜 0원이야?')">이거 왜 0원이야?</button>
-        <button class="chip" onclick="fillQuestion('결국 얼마 내는 거야?')">결국 얼마 내는 거야?</button>
-        <button class="chip" onclick="fillQuestion('배송비도 있어?')">배송비도 있어?</button>
+      <div class="thumb" id="askThumb"><div class="mini"></div><span>보여주신 화면</span></div>
+      <div class="mic-wrap">
+        <button class="mic" id="micBtn" onclick="toggleMic()" aria-label="말로 물어보기">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg>
+        </button>
+        <b id="micLabel">눌러서 말씀하세요</b>
       </div>
-      <div class="ask-row">
-        <input class="ask-input" id="questionInput" placeholder="예) 이거 왜 0원이야?" />
-        <button class="mic-btn" id="micBtn" onclick="toggleMic()">🎤</button>
-      </div>
-      <button class="big-btn" onclick="submitQuestion()">질문하기</button>
+      <div class="divider">또는 눌러서 고르기</div>
+      <button class="chip" onclick="ask('이거 왜 0원이야?')">이거 왜 0원이야?</button>
+      <button class="chip" onclick="ask('결국 얼마 내는 거야?')">결국 얼마 내는 거야?</button>
+      <button class="chip" onclick="ask('배송비도 있어?')">배송비도 있어?</button>
+      <input class="ask-input" id="questionInput" placeholder="직접 적어도 돼요" enterkeyhint="send"
+             onkeydown="if(event.key==='Enter'&&this.value.trim())ask(this.value.trim())" />
     </section>
 
     <!-- 로딩 -->
     <section class="screen" id="screen-loading">
       <div class="loading">
         <div class="spinner"></div>
-        화면을 확인하고 있어요...
+        <ul class="load-steps" id="loadSteps">
+          <li>화면을 읽고 있어요</li>
+          <li>금액을 찾고 있어요</li>
+          <li>쉽게 정리하고 있어요</li>
+        </ul>
       </div>
     </section>
 
     <!-- 답변 -->
     <section class="screen" id="screen-answer">
-      <div class="amount-banner">
-        <div>지금 내실 결제 금액</div>
-        <div class="amt">0원</div>
+      <div class="bubble" id="qBubble">이거 왜 0원이야?</div>
+      <div class="amount">
+        <div class="lbl">지금 내실 돈</div>
+        <div class="big">0원</div>
+        <span class="badge">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          추가로 낼 돈 없어요
+        </span>
       </div>
-      <div class="answer-card">
-        <div class="row">
-          <div class="label">왜 0원인가요?</div>
-          <div class="value note">웰컴백 쿠폰 할인 적용</div>
-        </div>
-        <div class="row">
-          <div class="label">추가로 더 낼 돈</div>
-          <div class="value">없음</div>
-        </div>
-        <div class="row">
-          <div class="label">확인할 점</div>
-          <div class="value">쿠폰은 이번 1회만 사용 가능</div>
+
+      <div class="sec">
+        <h3>왜 0원일까요?</h3>
+        <div class="receipt">
+          <div class="r"><span>상품 값</span><b>12,900원</b></div>
+          <div class="r"><span>배송비</span><b>3,000원</b></div>
+          <div class="r minus"><span>웰컴백 쿠폰 <span class="tag">할인</span></span><b>−15,900원</b></div>
+          <div class="r total"><span>내실 돈</span><b>0원</b></div>
         </div>
       </div>
-      <div class="tts-row">
-        <button class="tts-btn" onclick="speakAnswer()">🔊 소리로 다시 듣기</button>
+
+      <div class="sec">
+        <h3>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E0662A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01"/></svg>
+          꼭 알아두세요
+        </h3>
+        <div class="warn">
+          <ul>
+            <li>이 쿠폰은 <b>딱 한 번</b>만 쓸 수 있어요.</li>
+            <li>반품하면 쿠폰은 <b>돌려받지 못할 수</b> 있어요.</li>
+          </ul>
+        </div>
       </div>
-      <button class="big-btn outline" onclick="nav('compare')">상품 비교도 해볼까요? →</button>
-      <button class="big-btn" onclick="resetToHome()">처음으로</button>
+
+      <button class="tts" id="ttsBtn" onclick="speakAnswer()">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4zM15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
+        <span id="ttsLabel">소리로 듣기</span>
+      </button>
+      <div class="two">
+        <button class="btn ghost" onclick="history.back()">다시 묻기</button>
+        <button class="btn" onclick="resetToHome()">처음으로</button>
+      </div>
     </section>
 
     <!-- 비교 -->
     <section class="screen" id="screen-compare">
-      <p class="lead">두 상품의 실제 크기 차이를 눈으로 보여드려요.</p>
-      <div class="compare-wrap">
-        <div class="compare-item">
-          <div class="box" style="height:140px;">
-            <div class="bar" style="height:78px;"></div>
-          </div>
-          <div class="size">30cm</div>
-          <div class="name">A 상품</div>
+      <h2 class="title">B가 조금 더 커요</h2>
+      <p class="lead">실제 크기 비율 그대로 겹쳐서 보여드려요.</p>
+      <div class="cmp">
+        <div class="stage">
+          <div class="sq b" style="width:233px;height:233px;justify-content:flex-end;">B</div>
+          <div class="sq a" style="width:200px;height:200px;">A</div>
         </div>
-        <div class="compare-item">
-          <div class="box" style="height:140px;">
-            <div class="bar" style="height:92px;"></div>
-          </div>
-          <div class="size">35cm</div>
-          <div class="name">B 상품</div>
+        <div class="legend">
+          <div class="la"><b>30cm</b><span>A 상품<br>29,000원</span></div>
+          <div class="lb"><b>35cm</b><span>B 상품<br>34,000원</span></div>
         </div>
       </div>
-      <div class="diff-note">B 상품이 A보다 약 17% 더 커요 (5cm 차이)</div>
-      <button class="big-btn" style="margin-top:28px" onclick="resetToHome()">처음으로</button>
+      <div class="facts">
+        <div class="f">
+          <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M2 12h20M6 8l-4 4 4 4M18 8l4 4-4 4"/></svg></span>
+          <div>한 변이 <b>5cm</b> 더 길어요.<br>신용카드 짧은 쪽 정도예요.</div>
+        </div>
+        <div class="f">
+          <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="4" y="4" width="16" height="16" rx="2"/></svg></span>
+          <div>바닥 넓이는 <b>약 1.4배</b>예요.</div>
+        </div>
+        <div class="f">
+          <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+          <div>B가 <b>5,000원</b> 더 비싸요.</div>
+        </div>
+      </div>
+      <button class="btn" onclick="resetToHome()">처음으로</button>
     </section>
   </main>
-
-  <footer class="nav">
-    <a href="#/" onclick="nav('home');return false;" id="navHome"><span class="ic">🏠</span>홈</a>
-    <a href="#/capture" onclick="nav('capture');return false;" id="navCapture"><span class="ic">📷</span>물어보기</a>
-    <a href="#/compare" onclick="nav('compare');return false;" id="navCompare"><span class="ic">⚖️</span>비교하기</a>
-  </footer>
-  <p class="disclaimer">프로토타입 목업입니다. 실제 AI 분석 대신 예시 답변을 보여줍니다.</p>
 </div>
 
+<!-- 예시 결제 화면 템플릿 -->
+<template id="mockTpl">
+  <div class="mock">
+    <div class="h">주문/결제</div>
+    <div class="l"><span>상품금액</span><span>12,900원</span></div>
+    <div class="l"><span>배송비</span><span>+3,000원</span></div>
+    <div class="l c"><span>웰컴백 쿠폰</span><span>-15,900원</span></div>
+    <div class="l"><span>적립금 사용</span><span>0원</span></div>
+    <div class="t"><span>최종 결제금액</span><span>0원</span></div>
+    <div class="fine">* 쿠폰은 1회 한정 / 부분취소·반품 시 쿠폰 복원 불가 / 도서산간 추가배송비 별도</div>
+    <div class="pay">0원 결제하기</div>
+  </div>
+</template>
+
 <script>
-  const titles = {
-    home: '시니어 도우미',
-    capture: '화면 보여주기',
-    ask: '무엇이 궁금하세요?',
-    loading: '확인 중...',
-    answer: '쉽게 알려드릴게요',
-    compare: '상품 비교'
-  };
-  const history = [];
+  const titles = { capture:'', ask:'무엇이 궁금하세요?', loading:'', answer:'쉽게 알려드릴게요', compare:'상품 비교' };
+  let shotSrc = null;
 
-  function setActiveNav(name){
-    ['navHome','navCapture','navCompare'].forEach(id => document.getElementById(id).classList.remove('active'));
-    if(name==='home') document.getElementById('navHome').classList.add('active');
-    if(name==='capture'||name==='ask'||name==='loading'||name==='answer') document.getElementById('navCapture').classList.add('active');
-    if(name==='compare') document.getElementById('navCompare').classList.add('active');
-  }
-
-  function nav(name, push=true){
-    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-    document.getElementById('screen-'+name).classList.add('active');
-    document.getElementById('pageTitle').textContent = titles[name];
-    document.getElementById('backBtn').classList.toggle('show', name!=='home');
-    setActiveNav(name);
-    if(push) history.push(name);
-    location.hash = '#/' + (name==='home' ? '' : name);
+  function show(name){
+    if(!document.getElementById('screen-'+name)) name = 'home';
+    // 질문 없이 결과 화면으로 바로 들어오면 홈으로
+    if(['ask','loading','answer'].includes(name) && !shotSrc) name = 'capture';
+    document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active', s.id==='screen-'+name));
+    const home = name==='home';
+    document.getElementById('backBtn').hidden = home;
+    document.getElementById('brand').hidden = !home;
+    const t = document.getElementById('pageTitle');
+    t.hidden = home; t.textContent = titles[name] || '';
+    window.speechSynthesis?.cancel();
     window.scrollTo(0,0);
   }
-
-  function goBack(){
-    history.pop();
-    const prev = history.pop() || 'home';
-    nav(prev);
-  }
-
+  // 해시 = 브라우저 뒤로가기(안드로이드 뒤로 버튼)와 동기화
+  function go(name){ location.hash = '#/'+name; }
   function resetToHome(){
-    history.length = 0;
-    document.getElementById('uploadBox').classList.remove('has-img');
-    document.getElementById('uploadHint').style.display='block';
-    const preview = document.getElementById('previewImg');
-    if(preview) preview.remove();
-    document.getElementById('goAskBtn').style.display='none';
-    document.getElementById('questionInput').value='';
-    nav('home');
+    shotSrc = null;
+    const box = document.getElementById('uploadBox');
+    box.classList.remove('has-img');
+    box.querySelectorAll('img,.mock').forEach(n=>n.remove());
+    document.getElementById('uploadHint').hidden = false;
+    document.getElementById('goAskBtn').hidden = true;
+    document.getElementById('sampleBtn').hidden = false;
+    document.getElementById('questionInput').value = '';
+    location.replace('#/');
   }
+  window.addEventListener('hashchange', ()=>show(location.hash.replace('#/','')));
 
+  function setPreview(node){
+    const box = document.getElementById('uploadBox');
+    box.querySelectorAll('img,.mock').forEach(n=>n.remove());
+    box.classList.add('has-img');
+    document.getElementById('uploadHint').hidden = true;
+    box.appendChild(node);
+    document.getElementById('goAskBtn').hidden = false;
+    document.getElementById('sampleBtn').hidden = true;
+    const th = document.getElementById('askThumb');
+    th.firstElementChild.replaceWith(node.tagName==='IMG' ? Object.assign(new Image(), {src:node.src}) : Object.assign(document.createElement('div'), {className:'mini'}));
+  }
   function handleUpload(e){
     const file = e.target.files[0];
     if(!file) return;
-    const reader = new FileReader();
-    reader.onload = function(ev){
-      const box = document.getElementById('uploadBox');
-      box.classList.add('has-img');
-      document.getElementById('uploadHint').style.display='none';
-      let img = document.getElementById('previewImg');
-      if(!img){
-        img = document.createElement('img');
-        img.id = 'previewImg';
-        box.appendChild(img);
-      }
-      img.src = ev.target.result;
-      document.getElementById('goAskBtn').style.display='block';
-    };
-    reader.readAsDataURL(file);
+    const r = new FileReader();
+    r.onload = ev => { shotSrc = ev.target.result; setPreview(Object.assign(new Image(), {src:shotSrc, alt:'보여주신 화면'})); };
+    r.readAsDataURL(file);
+  }
+  function useSample(){
+    shotSrc = 'sample';
+    setPreview(document.getElementById('mockTpl').content.firstElementChild.cloneNode(true));
   }
 
-  function fillQuestion(q){
-    document.getElementById('questionInput').value = q;
-  }
-
-  function submitQuestion(){
-    nav('loading');
-    setTimeout(()=>{ nav('answer'); }, 1200);
+  function ask(q){
+    document.getElementById('qBubble').textContent = q;
+    go('loading');
+    const items = document.querySelectorAll('#loadSteps li');
+    items.forEach(li=>li.classList.remove('on'));
+    items.forEach((li,i)=>setTimeout(()=>li.classList.add('on'), i*500));
+    setTimeout(()=>{ location.replace('#/answer'); }, 1700);
   }
 
   let recognizing = false;
   function toggleMic(){
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const btn = document.getElementById('micBtn');
-    if(!SpeechRecognition){
-      fillQuestion('이거 왜 0원이야?');
-      return;
-    }
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const btn = document.getElementById('micBtn'), label = document.getElementById('micLabel');
+    if(!SR){ ask('이거 왜 0원이야?'); return; } // 미지원 브라우저: 데모용 기본 질문
     if(recognizing) return;
-    const rec = new SpeechRecognition();
+    const rec = new SR();
     rec.lang = 'ko-KR';
-    rec.onstart = ()=>{ recognizing = true; btn.classList.add('listening'); };
-    rec.onresult = (e)=>{ document.getElementById('questionInput').value = e.results[0][0].transcript; };
-    rec.onend = ()=>{ recognizing = false; btn.classList.remove('listening'); };
+    rec.onstart = ()=>{ recognizing = true; btn.classList.add('listening'); label.textContent = '듣고 있어요…'; };
+    rec.onresult = e => ask(e.results[0][0].transcript);
+    rec.onerror = ()=>{ label.textContent = '잘 못 들었어요. 다시 눌러주세요'; };
+    rec.onend = ()=>{ recognizing = false; btn.classList.remove('listening'); if(label.textContent==='듣고 있어요…') label.textContent='눌러서 말씀하세요'; };
     rec.start();
   }
 
   function speakAnswer(){
-    const text = '지금 내실 결제 금액은 0원입니다. 웰컴백 쿠폰 할인이 적용되어서 그렇습니다. 추가로 더 내실 돈은 없습니다. 다만 이 쿠폰은 이번 한 번만 사용할 수 있습니다.';
-    if('speechSynthesis' in window){
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = 'ko-KR';
-      u.rate = 0.95;
-      speechSynthesis.speak(u);
-    }
+    if(!('speechSynthesis' in window)) return;
+    const btn = document.getElementById('ttsBtn'), label = document.getElementById('ttsLabel');
+    if(speechSynthesis.speaking){ speechSynthesis.cancel(); return; }
+    const u = new SpeechSynthesisUtterance('지금 내실 돈은 0원이에요. 상품 값 만 이천 구백 원과 배송비 삼천 원을, 웰컴백 쿠폰이 전부 할인해 줬어요. 이 쿠폰은 딱 한 번만 쓸 수 있고, 반품하면 돌려받지 못할 수 있어요.');
+    u.lang = 'ko-KR'; u.rate = 0.9;
+    u.onstart = ()=>{ btn.classList.add('playing'); label.textContent = '멈추기'; };
+    u.onend = u.onerror = ()=>{ btn.classList.remove('playing'); label.textContent = '소리로 듣기'; };
+    speechSynthesis.speak(u);
   }
 
-  // 초기 라우팅
-  function routeFromHash(){
-    const h = location.hash.replace('#/','');
-    nav(h || 'home', false);
-  }
-  window.addEventListener('hashchange', routeFromHash);
-  routeFromHash();
+  show(location.hash.replace('#/',''));
 </script>
 </body>
 </html>
